@@ -4,10 +4,13 @@
 # DeepSpeed Team
 
 import torch
+import fsspec
+from fsspec.core import url_to_fs
+from lightning_fabric.utilities.cloud_io import get_filesystem
+
 from deepspeed.utils import logger, log_dist
 from deepspeed.runtime.checkpoint_engine.checkpoint_engine import \
     CheckpointEngine
-import fsspec
 import io
 
 class TorchCheckpointEngine(CheckpointEngine):
@@ -19,7 +22,8 @@ class TorchCheckpointEngine(CheckpointEngine):
         log_dist(f"[Torch] Checkpoint {tag} is about to be saved!", ranks=[0])
 
     def makedirs(self, path, exist_ok=False):
-        fsspec.makedirs(path, exist_ok=True)
+        fs, _ = url_to_fs(path)
+        fs.makedirs(path, exist_ok=True)
 
     def save(self, state_dict, path: str):
         logger.info(f"[Torch] Saving {path}...")
