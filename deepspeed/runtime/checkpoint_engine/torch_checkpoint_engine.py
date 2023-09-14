@@ -13,6 +13,7 @@ from deepspeed.runtime.checkpoint_engine.checkpoint_engine import \
     CheckpointEngine
 import io
 
+
 class TorchCheckpointEngine(CheckpointEngine):
 
     def __init__(self, config_params=None):
